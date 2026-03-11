@@ -1,6 +1,8 @@
 ---
 layout: default
-title: Contributing — Daplin
+title: Contributing
+excerpt: How to get involved with the Daplin project — specification review, security analysis, and more.
+nav_order: 6
 ---
 
 ## Project Status

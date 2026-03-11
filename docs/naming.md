@@ -1,6 +1,8 @@
 ---
 layout: default
-title: On the Name — Daplin
+title: On the Name
+excerpt: The origin of the name Daplin — its history, meaning, and the commitment it carries.
+nav_order: 4
 ---
 
 ## Where the name comes from

@@ -1,6 +1,8 @@
 ---
 layout: default
-title: Protocol Specification — Daplin v0.2.0 DRAFT
+title: Protocol Specification
+excerpt: The Daplin v0.2.0 protocol specification — decentralized identity, trust, and key exchange.
+nav_order: 2
 ---
 
 ## 1. Introduction

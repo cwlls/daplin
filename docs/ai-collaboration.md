@@ -1,6 +1,8 @@
 ---
 layout: default
-title: AI-Human Collaboration — Daplin
+title: AI-Human Collaboration
+excerpt: How AI-human collaboration made this project possible — augmentation, not replacement.
+nav_order: 5
 ---
 
 ## Opening

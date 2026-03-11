@@ -344,9 +344,9 @@ volumes:
 
 The project documentation is published as a static site at **daplin.org**, built with Jekyll and hosted on GitHub Pages. The site lives in the `docs/` directory of the monorepo and is deployed automatically when changes to `docs/` are pushed to `main`.
 
-### 8.2 Theme: Leap Day
+### 8.2 Theme: Read the Docs (carlosperate/jekyll-theme-rtd)
 
-The site uses the native GitHub Pages `jekyll-theme-leap-day` theme, configured via `theme:` (not `remote_theme:`), which requires no plugin list and no remote theme fetching at build time. Pages use `layout: default`. Primer-spec-specific front matter fields (`subtitle`, `sitemapOrder`, `excludeFromSitemap`) are no longer used.
+The site uses `carlosperate/jekyll-theme-rtd@v1.0.0`, a port of the Read the Docs theme for Jekyll and GitHub Pages. Configured as a `remote_theme` (requires `jekyll-remote-theme` plugin). Features: collapsible sidebar navigation, built-in Lunr.js search, "Edit on GitHub" links, syntax highlighting via highlight.js, SEO meta tags. Pages use `layout: default`. Sidebar navigation order is controlled via `nav_order` front matter (1–6). Pages can be excluded from the sidebar with `nav_exclude: true`. Version is pinned to `@v1.0.0` as recommended by the theme author to avoid breaking changes from future major versions.
 
 ### 8.3 Domain Configuration
 
@@ -429,11 +429,13 @@ Key configuration values:
 
 | Setting | Value | Purpose |
 |---------|-------|---------|
-| `theme` | `jekyll-theme-leap-day` | Native GitHub Pages theme |
+| `remote_theme` | `carlosperate/jekyll-theme-rtd@v1.0.0` | Read the Docs theme for Jekyll |
+| `plugins` | `[jekyll-remote-theme]` | Enable remote theme fetching |
 | `title` | `Daplin` | Site title in header/tab |
 | `description` | `Dignified Attestation Protocol for Linked Identity Networks` | Meta description, SEO |
 | `url` | `https://daplin.org` | Canonical site URL |
 | `baseurl` | `` (empty) | Root-hosted, no path prefix |
+| `search_enabled` | `true` | Enable Lunr.js search |
 
 Individual pages use front matter to control layout behavior (e.g., `title`, `layout`).
 

@@ -1,6 +1,8 @@
 ---
 layout: default
-title: Project Rationale — Daplin
+title: Project Rationale
+excerpt: Why Daplin is designed the way it is — the design philosophy behind the protocol.
+nav_order: 3
 ---
 
 ## The Problem

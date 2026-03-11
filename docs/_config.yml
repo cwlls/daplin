@@ -1,4 +1,6 @@
-theme: jekyll-theme-leap-day
+remote_theme: carlosperate/jekyll-theme-rtd@v1.0.0
+plugins:
+  - jekyll-remote-theme
 
 title: Daplin
 description: >-
@@ -7,6 +9,20 @@ description: >-
   public key exchange, and social trust.
 url: https://daplin.org
 baseurl: ""
+
+repo_url: 'https://github.com/cwlls/daplin'
+edit_on_github: false
+site_author: Daplin Contributors
+
+search_enabled: true
+sticky_navigation: true
+prev_next_buttons_location: bottom
+
+hljs_languages:
+  - json
+  - yaml
+  - bash
+  - python
 
 exclude:
   - src/
