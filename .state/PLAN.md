@@ -1,36 +1,42 @@
 # Daplin Implementation State
 
+## Status Notes
+
+**Task 1 (Project Scaffolding):** Complete. Full `server/` directory structure created with `pyproject.toml`, all dependencies configured, ruff/mypy/pytest verified working. Python 3.13 venv at `server/.venv`. Ready for Phase 1 foundation tasks.
+
+---
+
 | # | Task | Priority | Agent | Status | Depends On | Notes |
 |:--|:-----|:---------|:------|:-------|:-----------|:------|
-| 1 | Project scaffolding | high | dev | pending | — | pyproject.toml, ruff, mypy, pytest, directory structure |
-| 2 | Crypto module | high | dev | pending | 1 | Ed25519, BLAKE2b, BIP39, key hierarchy |
-| 3 | DID:key generation | high | dev | pending | 2 | Multicodec encoding, did:key resolution |
-| 4 | Pydantic models (identity + card) | high | dev | pending | 3 | Card JSON-LD, activity envelope, API schemas |
-| 5 | Filesystem storage backend | high | dev | pending | 1 | CIDv1-compatible content-addressable store |
-| 6 | Database models + async session | high | dev | pending | 1 | SQLAlchemy 2.0 async, Alembic, SQLite dev |
-| 7 | Event queue abstraction + in-memory backend | high | dev | pending | 1 | ABC interface, in-memory impl for dev/test |
-| 8 | FastAPI app + health check | high | dev | pending | 1, 6 | App factory, lifespan, config, /health |
-| 9 | Identity registration endpoint | high | dev | pending | 4, 6, 8 | POST /api/v1/identity |
-| 10 | Card publishing + retrieval | high | dev | pending | 4, 5, 6, 8 | POST + GET /api/v1/cards |
-| 11 | DID resolution endpoint | high | dev | pending | 6, 8 | GET /api/v1/identity/{did} |
-| 12 | Well-known endpoint | high | dev | pending | 8 | GET /.well-known/daplin |
-| 13 | Authentication (challenge-response) | high | dev | pending | 2, 6, 8 | Nonce, Ed25519 sig verify, JWT |
-| 14 | NATS JetStream event queue backend | medium | dev | pending | 7 | Durable per-user streams |
-| 15 | WebSocket event push | medium | dev | pending | 7, 8, 13 | WS /api/v1/events/ws |
-| 16 | HTTP polling event fallback | medium | dev | pending | 7, 8, 13 | GET + DELETE /api/v1/events |
-| 17 | DIDComm v2 activity envelope | high | dev | pending | 2, 4 | Sign/verify/encrypt/decrypt |
-| 18 | Instance discovery (well-known) | high | dev | pending | 8, 12 | Fetch + cache remote /.well-known/daplin |
-| 19 | Federation inbox | high | dev | pending | 7, 8, 17 | POST /api/v1/federation/inbox |
-| 20 | Cross-instance DID resolution | high | dev | pending | 11, 18 | Resolve remote DID via federation |
-| 21 | Card exchange flow | high | dev | pending | 9, 10, 17, 19 | Request → queue → accept → return |
-| 22 | Docker Compose (two-instance) | high | dev | pending | 8, 14, 19 | instance-a, instance-b, nats |
-| 23 | Federation integration tests | high | dev | pending | 21, 22 | End-to-end two-instance card exchange |
-| 24 | IPFS storage backend | medium | dev | pending | 5 | Kubo HTTP API integration |
-| 25 | PostgreSQL support | medium | dev | pending | 6 | asyncpg, production config |
-| 26 | Production Docker Compose | medium | dev | pending | 22, 24, 25 | NATS + Kubo + Postgres |
-| 27 | PoW enforcement (Argon2id) | low | dev | pending | 2, 17 | Stub → real enforcement |
-| 28 | Rate limiting + input validation + error handling | medium | dev | pending | 8 | Production hardening |
-| 29 | OpenAPI documentation review | low | dev | pending | 8 | Verify auto-generated docs |
+| 1 | Project scaffolding | high | @developer | [x] complete | — | pyproject.toml, ruff, mypy, pytest, directory structure |
+| 2 | Crypto module | high | @developer | [ ] pending | 1 | Ed25519, BLAKE2b, BIP39, key hierarchy |
+| 3 | DID:key generation | high | @developer | [ ] pending | 2 | Multicodec encoding, did:key resolution |
+| 4 | Pydantic models (identity + card) | high | @developer | [ ] pending | 3 | Card JSON-LD, activity envelope, API schemas |
+| 5 | Filesystem storage backend | high | @developer | [ ] pending | 1 | CIDv1-compatible content-addressable store |
+| 6 | Database models + async session | high | @developer | [ ] pending | 1 | SQLAlchemy 2.0 async, Alembic, SQLite dev |
+| 7 | Event queue abstraction + in-memory backend | high | @developer | [ ] pending | 1 | ABC interface, in-memory impl for dev/test |
+| 8 | FastAPI app + health check | high | @developer | [ ] pending | 1, 6 | App factory, lifespan, config, /health |
+| 9 | Identity registration endpoint | high | @developer | [ ] pending | 4, 6, 8 | POST /api/v1/identity |
+| 10 | Card publishing + retrieval | high | @developer | [ ] pending | 4, 5, 6, 8 | POST + GET /api/v1/cards |
+| 11 | DID resolution endpoint | high | @developer | [ ] pending | 6, 8 | GET /api/v1/identity/{did} |
+| 12 | Well-known endpoint | high | @developer | [ ] pending | 8 | GET /.well-known/daplin |
+| 13 | Authentication (challenge-response) | high | @developer | [ ] pending | 2, 6, 8 | Nonce, Ed25519 sig verify, JWT |
+| 14 | NATS JetStream event queue backend | medium | @developer | [ ] pending | 7 | Durable per-user streams |
+| 15 | WebSocket event push | medium | @developer | [ ] pending | 7, 8, 13 | WS /api/v1/events/ws |
+| 16 | HTTP polling event fallback | medium | @developer | [ ] pending | 7, 8, 13 | GET + DELETE /api/v1/events |
+| 17 | DIDComm v2 activity envelope | high | @developer | [ ] pending | 2, 4 | Sign/verify/encrypt/decrypt |
+| 18 | Instance discovery (well-known) | high | @developer | [ ] pending | 8, 12 | Fetch + cache remote /.well-known/daplin |
+| 19 | Federation inbox | high | @developer | [ ] pending | 7, 8, 17 | POST /api/v1/federation/inbox |
+| 20 | Cross-instance DID resolution | high | @developer | [ ] pending | 11, 18 | Resolve remote DID via federation |
+| 21 | Card exchange flow | high | @developer | [ ] pending | 9, 10, 17, 19 | Request → queue → accept → return |
+| 22 | Docker Compose (two-instance) | high | @developer | [ ] pending | 8, 14, 19 | instance-a, instance-b, nats |
+| 23 | Federation integration tests | high | @developer | [ ] pending | 21, 22 | End-to-end two-instance card exchange |
+| 24 | IPFS storage backend | medium | @developer | [ ] pending | 5 | Kubo HTTP API integration |
+| 25 | PostgreSQL support | medium | @developer | [ ] pending | 6 | asyncpg, production config |
+| 26 | Production Docker Compose | medium | @developer | [ ] pending | 22, 24, 25 | NATS + Kubo + Postgres |
+| 27 | PoW enforcement (Argon2id) | low | @developer | [ ] pending | 2, 17 | Stub → real enforcement |
+| 28 | Rate limiting + input validation + error handling | medium | @developer | [ ] pending | 8 | Production hardening |
+| 29 | OpenAPI documentation review | low | @developer | [ ] pending | 8 | Verify auto-generated docs |
 
 ---
 

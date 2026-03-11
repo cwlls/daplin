@@ -110,7 +110,7 @@ The `server/` directory is a self-contained Python package. The `docs/` director
 
 | Concern | Choice | Rationale |
 |---------|--------|-----------|
-| **Language** | Python 3.12+ | Team familiarity, rapid prototyping, strong async ecosystem |
+| **Language** | Python 3.13 | Team familiarity, rapid prototyping, strong async ecosystem |
 | **Web framework** | FastAPI | Async-first, automatic OpenAPI docs, Pydantic integration |
 | **Async model** | async/await throughout | Federation requires concurrent HTTP, DB, and storage I/O |
 | **Database (dev)** | SQLite via aiosqlite | Zero-config, single-file, good enough for dev/test |
@@ -295,14 +295,16 @@ Alice (Instance A)                                    Bob (Instance B)
 
 ```bash
 # Single instance (in-memory queue, filesystem storage, SQLite)
-cd server && uvicorn daplin_server.main:app --reload
+cd server && source .venv/bin/activate && uvicorn daplin_server.main:app --reload
 
 # Single instance with NATS (requires local nats-server or Docker)
-DAPLIN_NATS_URL=nats://localhost:4222 uvicorn daplin_server.main:app --reload
+cd server && source .venv/bin/activate && DAPLIN_NATS_URL=nats://localhost:4222 uvicorn daplin_server.main:app --reload
 
 # Two-instance federation testing
 docker-compose up  # Starts instance-a, instance-b, nats, (optional) kubo
 ```
+
+**Virtual environment:** Located at `server/.venv` (Python 3.13). Activate with `source server/.venv/bin/activate` or `cd server && source .venv/bin/activate`.
 
 ### Production
 
