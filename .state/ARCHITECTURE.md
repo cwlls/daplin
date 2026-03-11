@@ -47,8 +47,9 @@ daplin/
 │   ├── naming.md                # On the name "Daplin" — origin and commitment
 │   ├── ai-collaboration.md      # AI-human collaboration in protocol design
 │   ├── contributing.md          # How to contribute
-│   ├── project-description.md   # Legacy project description (source material)
-│   └── daplin-spec-v0.2.0.md   # Legacy spec source (canonical content moved to spec.md)
+│   └── src/                     # Source material (excluded from Jekyll build)
+│       ├── project-description.md   # Original project description
+│       └── daplin-spec-v0.2.0.md   # Original spec source (v0.2.0 snapshot)
 ├── server/                      # Instance server (Python/FastAPI) ← v0.1 focus
 │   ├── src/
 │   │   └── daplin_server/

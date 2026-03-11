@@ -19,6 +19,9 @@ description: >-
 url: https://daplin.org
 baseurl: ""
 
+exclude:
+  - src/
+
 primerSpec:
   sitemap:
     label: ""

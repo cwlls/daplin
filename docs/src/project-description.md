@@ -1,8 +1,3 @@
----
-layout: spec
-excludeFromSitemap: true
----
-
 # Daplin — Project Description
 
 **Dignified Attestation Protocol for Linked Identity Networks**
