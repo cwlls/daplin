@@ -1,7 +1,7 @@
 # Daplin — Architectural Overview
 
-> **Status:** Draft v0.1 · Last updated: 2026-03-10
-> **Scope:** Instance server reference implementation (v0.1 vertical slice)
+> **Status:** Draft v0.2 · Phase 0 complete · Last updated: 2026-03-11
+> **Scope:** Instance server reference implementation (v0.1 vertical slice) + project documentation site
 
 ---
 
@@ -38,7 +38,17 @@ The first deliverable is a vertical slice proving the federation model works end
 
 ```
 daplin/
-├── docs/                        # Protocol specification and project docs
+├── docs/                        # Jekyll site served via GitHub Pages at daplin.org
+│   ├── _config.yml              # Jekyll config (primer-spec theme, site metadata)
+│   ├── CNAME                    # Custom domain: daplin.org
+│   ├── index.md                 # Landing page (home)
+│   ├── spec.md                  # Protocol specification (v0.2.0)
+│   ├── rationale.md             # Project rationale and design philosophy
+│   ├── naming.md                # On the name "Daplin" — origin and commitment
+│   ├── ai-collaboration.md      # AI-human collaboration in protocol design
+│   ├── contributing.md          # How to contribute
+│   ├── project-description.md   # Legacy project description (source material)
+│   └── daplin-spec-v0.2.0.md   # Legacy spec source (canonical content moved to spec.md)
 ├── server/                      # Instance server (Python/FastAPI) ← v0.1 focus
 │   ├── src/
 │   │   └── daplin_server/
@@ -91,7 +101,7 @@ daplin/
 └── CLAUDE.md
 ```
 
-The `server/` directory is a self-contained Python package. Future additions (client libraries, CLI tools, mobile SDKs) will be sibling directories in the monorepo.
+The `server/` directory is a self-contained Python package. The `docs/` directory doubles as the Jekyll-based GitHub Pages site. Future additions (client libraries, CLI tools, mobile SDKs) will be sibling directories in the monorepo.
 
 ---
 
@@ -327,9 +337,138 @@ volumes:
 
 ---
 
-## 8. Implementation Phases
+## 8. Documentation Site (daplin.org)
 
-### Phase 1: Foundation (current target)
+### 8.1 Overview
+
+The project documentation is published as a static site at **daplin.org**, built with Jekyll and hosted on GitHub Pages. The site lives in the `docs/` directory of the monorepo and is deployed automatically when changes to `docs/` are pushed to `main`.
+
+### 8.2 Theme: Primer Spec
+
+The site uses the **[eecs485staff/primer-spec](https://github.com/eecs485staff/primer-spec)** Jekyll theme, which provides:
+
+- **Automatic sidebar table of contents** generated from markdown headings — the spec's manually-authored `## Table of Contents` section is removed to avoid duplication
+- **Clean, readable typography** suited to long-form technical documents
+- **Responsive layout** that works on desktop and mobile
+- **Dark mode** support
+- **Page-level front matter** controls for title, subtitle, and TOC behavior
+
+The theme is configured as a `remote_theme` in `_config.yml`, requiring no local gem installation. GitHub Pages builds it natively.
+
+### 8.3 Domain Configuration
+
+- **Custom domain:** `daplin.org` (root domain, no subdomain)
+- **CNAME file:** `docs/CNAME` contains `daplin.org`
+- **DNS:** The domain's DNS must be configured with either an `A` record pointing to GitHub Pages IPs or a `CNAME` record (if using `www` subdomain). HTTPS is enforced via GitHub Pages settings.
+- **Base URL:** `/` (root-hosted, no path prefix)
+
+### 8.4 Site Structure and Pages
+
+The site is a multi-page documentation hub. Each page is a standalone markdown file with Primer Spec front matter.
+
+#### Landing Page (`index.md`)
+
+The home page introduces Daplin to new visitors. Its content is drawn from the spec's compelling §1 Introduction — the "your identity, your relationships, your communications are yours" framing — adapted into a standalone landing page. It includes:
+
+- The core thesis: trust solved through human relationships, wrapped in an open protocol
+- The core principles (privacy-first, identity independent of host, vouching not transferring, etc.) — drawn from the spec §1.1 and `project-description.md`
+- Navigation links to all other pages on the site
+- Project status (design/specification phase, no implementation yet)
+
+The landing page is *not* a copy-paste of the spec introduction — it is a purpose-written welcome that draws on that material and the project description to orient visitors before they dive into technical content.
+
+#### Protocol Specification (`spec.md`)
+
+The v0.2.0 protocol specification in full. This is the canonical rendering of `daplin-spec-v0.2.0.md` with two modifications:
+
+1. The manually-authored `## Table of Contents` section is **removed** — Primer Spec's sidebar TOC replaces it
+2. Front matter is added for title, subtitle, and any theme-specific settings
+
+The spec content itself is unchanged. As the spec evolves, `spec.md` is the living document; the original `daplin-spec-v0.2.0.md` is retained as a point-in-time snapshot.
+
+#### Project Rationale (`rationale.md`)
+
+Why Daplin exists — the design philosophy and the problem space it addresses. Content is synthesized from `project-description.md`, covering:
+
+- The trust problem in secure communication (central authorities vs. complexity)
+- The two-layer DID architecture and why it matters
+- The capability key model and tiered access
+- Why federation without a central authority
+- Why no blockchain
+
+This page answers the question: "I understand *what* Daplin is — why was it designed this way?"
+
+#### On the Name (`naming.md`)
+
+The full statement on the origin of the name "Daplin" — the history of the dap among Black American soldiers in Vietnam, the alignment between that history and the protocol's purpose, and the developer's commitment to honoring that heritage. This content is provided verbatim as authored by the lead developer. It is not a marketing page — it is a statement of intention and respect.
+
+#### AI-Human Collaboration (`ai-collaboration.md`)
+
+A philosophical reflection on how AI-human collaboration made this project possible. This page is **not** a dry disclosure — it is a thoughtful take on augmentation over replacement. Key themes:
+
+- AI as a tool for externalizing and structuring ideas that exist in the developer's head
+- The distinction between having ideas and being able to sketch/conceptualize/refine them — AI enables the latter at a pace that matches the former
+- AI does not replace the human element: the vision, the values, the naming decision, the ethical considerations — these are irreducibly human
+- The collaboration model: human intent and direction, AI as a thinking partner that can draft, challenge, and iterate
+- Honest acknowledgment of what AI contributed and what it cannot
+
+This page will evolve as the project moves from specification into implementation.
+
+#### Contributing (`contributing.md`)
+
+How to get involved with the Daplin project. Covers:
+
+- The project's current status and what kinds of contributions are most valuable now
+- How to propose changes to the protocol specification (RFC-style process per the spec's §13 governance model)
+- Code contribution guidelines (to be expanded when the reference implementation begins)
+- Code of conduct and community expectations
+- Licensing (Apache 2.0)
+
+#### Future Pages (not yet created)
+
+- **Reference Server** — documentation for the Python/FastAPI reference implementation, added when the server reaches a usable state
+- **API Reference** — auto-generated or hand-curated endpoint documentation, added when the API surface stabilizes
+- **Implementor's Guide** — guidance for third parties building Daplin-compatible software
+
+### 8.5 Jekyll Configuration (`_config.yml`)
+
+Key configuration values:
+
+| Setting | Value | Purpose |
+|---------|-------|---------|
+| `remote_theme` | `eecs485staff/primer-spec` | Theme via GitHub Pages remote theme support |
+| `title` | `Daplin` | Site title in header/tab |
+| `description` | `Dignified Attestation Protocol for Linked Identity Networks` | Meta description, SEO |
+| `url` | `https://daplin.org` | Canonical site URL |
+| `baseurl` | `` (empty) | Root-hosted, no path prefix |
+| `plugins` | `[jekyll-remote-theme]` | Required for remote theme loading |
+
+Individual pages use front matter to control Primer Spec behavior (e.g., `title`, `subtitle`, `exclude_from_search`).
+
+### 8.6 Deployment
+
+- **Source:** GitHub Pages configured to serve from the `docs/` directory on the `main` branch
+- **Build:** Jekyll build is handled by GitHub Pages automatically on push
+- **No CI/CD pipeline needed** — GitHub Pages' native Jekyll support handles everything
+- **Preview:** Contributors can run `bundle exec jekyll serve` locally from `docs/` for preview, but this is optional — the theme renders correctly on GitHub Pages without local testing
+
+---
+
+## 9. Implementation Phases
+
+### Phase 0: Documentation Site ✅ Complete
+- [x] Jekyll configuration (`_config.yml` with primer-spec remote theme)
+- [x] CNAME file for `daplin.org`
+- [x] Landing page (`index.md`) — adapted from spec introduction and project description
+- [x] Protocol spec page (`spec.md`) — v0.2.0 spec with TOC section removed, front matter added
+- [x] Project rationale page (`rationale.md`) — synthesized from project description
+- [x] Naming statement page (`naming.md`) — verbatim developer statement on the name's origin
+- [x] AI collaboration page (`ai-collaboration.md`) — philosophical reflection on AI-human collaboration
+- [x] Contributing page (`contributing.md`) — contribution guidelines and community expectations
+- [x] DNS configuration for `daplin.org` → GitHub Pages
+- [x] Verify site renders correctly at `daplin.org`
+
+### Phase 1: Foundation
 - [ ] Project scaffolding (pyproject.toml, ruff, mypy, pytest config)
 - [ ] Crypto module (key generation, signing, BLAKE2b subkey derivation)
 - [ ] DID:key generation and encoding
@@ -368,21 +507,21 @@ volumes:
 
 ---
 
-## 9. Resolved Design Decisions
+## 10. Resolved Design Decisions
 
-### 9.1 Card Format: JSON-LD
+### 10.1 Card Format: JSON-LD
 
 Cards are serialized as **JSON-LD**, aligning with the W3C DID Document specification. Every Daplin card is a valid DID Document consumable by standard DID tooling. This ensures interoperability with the broader decentralized identity ecosystem from day one.
 
 Cards include a `@context` field referencing the DID Core context and a Daplin-specific context for protocol extensions (medium descriptors, capability tiers, etc.).
 
-### 9.2 Activity Envelope Format: DIDComm v2
+### 10.2 Activity Envelope Format: DIDComm v2
 
 Federation activities use **DIDComm v2** message envelopes. DIDComm provides authenticated encryption, signing, and routing between DIDs — exactly the semantics Daplin federation requires. This eliminates the need for a bespoke wire format and aligns with the JSON-LD and DID ecosystem choices.
 
 DIDComm v2 uses JOSE (JWS/JWE) under the hood but provides a well-defined profile that constrains algorithm choices and eliminates common JOSE pitfalls.
 
-### 9.3 Handle Validation Rules
+### 10.3 Handle Validation Rules
 
 Daplin handles follow the format `{local_part}>{domain}` with these rules:
 
@@ -402,13 +541,13 @@ Daplin handles follow the format `{local_part}>{domain}` with these rules:
 
 ---
 
-### 9.4 Event Queue: NATS with JetStream
+### 10.4 Event Queue: NATS with JetStream
 
 The event queue uses **NATS with JetStream** for durable per-user message delivery. This provides real-time WebSocket push as the primary delivery mode and HTTP polling as a fallback — both backed by the same infrastructure. An in-memory queue implementation provides a zero-dependency fallback for local development and unit tests. See §4.4 for full details.
 
 ---
 
-### 9.5 Storage Hashing: CID-Compatible from Day One
+### 10.5 Storage Hashing: CID-Compatible from Day One
 
 Both the filesystem and IPFS storage backends use **CIDv1 content identifiers** as the canonical reference format. The filesystem backend hashes content with SHA-256 (matching IPFS defaults), wraps the result in a CIDv1 structure (raw multicodec + multihash + base32 encoding), and uses the CID string as the filename. This means:
 
@@ -421,6 +560,6 @@ This adds a dependency on `multiformats` (or `py-cid` + `py-multihash`) for CID 
 
 ---
 
-## 10. Open Questions
+## 11. Open Questions
 
 No open questions remain. All design decisions for v0.1 have been resolved.
