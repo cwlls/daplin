@@ -6,11 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Daplin (Dignified Attestation Protocol for Linked Identity Networks) is an open protocol for decentralized digital identity, cryptographic public key exchange, and social trust. Licensed under Apache 2.0.
 
-**Current status:** Design and specification phase. The protocol spec (v0.2.0 draft) and architectural overview are complete. Phase 0 (documentation site at daplin.org) is complete. No server implementation code exists yet.
+**Current status:** Phase 1 in progress. The protocol spec (v0.2.0 draft) and architectural overview are complete. Phase 0 (documentation site at daplin.org) is complete. Server scaffolding (Task 1) is complete.
 
 ## Repository Structure
 
 This is a **monorepo**. The instance server lives in `server/` (not yet created). Future client libraries, CLIs, and SDKs will be sibling directories.
+
+- `server/` — Instance server (Python/FastAPI) — scaffolded, Phase 1 in progress
+  - `server/pyproject.toml` — project config, dependencies, ruff/mypy/pytest settings
+  - `server/.python-version` — pins Python 3.13
+  - `server/uv.lock` — locked dependency graph (committed)
+  - `server/src/daplin_server/` — main package
+  - `server/tests/` — unit, integration, and federation test suites
 
 - `docs/` — Jekyll site served via GitHub Pages at daplin.org (theme: `carlosperate/jekyll-theme-rtd@v1.0.0`)
   - `docs/_config.yml` — Jekyll configuration
@@ -20,9 +27,10 @@ This is a **monorepo**. The instance server lives in `server/` (not yet created)
 - `.state/PLAN.md` — Phase 0 implementation plan (complete)
 - `server/` — Instance server (Python/FastAPI) — **not yet created, v0.1 target**
 
-## Language & Tooling (Planned)
+## Language & Tooling
 
-- **Python 3.12+** with async/await throughout
+- **Python 3.13** with async/await throughout
+- **uv** — package manager and virtual environment (`uv sync --dev` to install, `uv run <cmd>` to execute)
 - **FastAPI** — web framework (async-first)
 - **SQLAlchemy 2.0 async** — ORM (SQLite for dev, PostgreSQL for prod)
 - **Alembic** — database migrations
@@ -33,11 +41,9 @@ This is a **monorepo**. The instance server lives in `server/` (not yet created)
 - **multiformats** — CIDv1 content identifiers
 - **httpx** — async HTTP client for federation
 - **nats-py** — NATS JetStream client for event queue
-- **Ruff** — linting and formatting
-- **mypy** — strict type checking
-- **pytest + pytest-asyncio** — testing
-
-No build/test/lint configuration exists yet — update this file when tooling is added.
+- **Ruff** — linting and formatting (`uv run ruff check src tests`)
+- **mypy** — strict type checking (`uv run mypy src/daplin_server`)
+- **pytest + pytest-asyncio** — testing (`uv run pytest`)
 
 ## Key Architecture Decisions
 
