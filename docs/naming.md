@@ -1,8 +1,6 @@
 ---
-layout: spec
-title: On the Name
-subtitle: A statement on naming from the lead developer
-sitemapOrder: 4
+layout: default
+title: On the Name — Daplin
 ---
 
 ## Where the name comes from

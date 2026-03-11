@@ -1,8 +1,6 @@
 ---
-layout: spec
-title: Contributing
-subtitle: How to get involved with Daplin
-sitemapOrder: 6
+layout: default
+title: Contributing — Daplin
 ---
 
 ## Project Status

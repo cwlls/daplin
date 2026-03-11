@@ -1,8 +1,6 @@
 ---
-layout: spec
-title: AI-Human Collaboration
-subtitle: How this project was built
-sitemapOrder: 5
+layout: default
+title: AI-Human Collaboration — Daplin
 ---
 
 ## Opening

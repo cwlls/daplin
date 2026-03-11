@@ -344,17 +344,9 @@ volumes:
 
 The project documentation is published as a static site at **daplin.org**, built with Jekyll and hosted on GitHub Pages. The site lives in the `docs/` directory of the monorepo and is deployed automatically when changes to `docs/` are pushed to `main`.
 
-### 8.2 Theme: Primer Spec
+### 8.2 Theme: Leap Day
 
-The site uses the **[eecs485staff/primer-spec](https://github.com/eecs485staff/primer-spec)** Jekyll theme, which provides:
-
-- **Automatic sidebar table of contents** generated from markdown headings — the spec's manually-authored `## Table of Contents` section is removed to avoid duplication
-- **Clean, readable typography** suited to long-form technical documents
-- **Responsive layout** that works on desktop and mobile
-- **Dark mode** support
-- **Page-level front matter** controls for title, subtitle, and TOC behavior
-
-The theme is configured as a `remote_theme` in `_config.yml`, requiring no local gem installation. GitHub Pages builds it natively.
+The site uses the native GitHub Pages `jekyll-theme-leap-day` theme, configured via `theme:` (not `remote_theme:`), which requires no plugin list and no remote theme fetching at build time. Pages use `layout: default`. Primer-spec-specific front matter fields (`subtitle`, `sitemapOrder`, `excludeFromSitemap`) are no longer used.
 
 ### 8.3 Domain Configuration
 
@@ -437,14 +429,13 @@ Key configuration values:
 
 | Setting | Value | Purpose |
 |---------|-------|---------|
-| `remote_theme` | `eecs485staff/primer-spec` | Theme via GitHub Pages remote theme support |
+| `theme` | `jekyll-theme-leap-day` | Native GitHub Pages theme |
 | `title` | `Daplin` | Site title in header/tab |
 | `description` | `Dignified Attestation Protocol for Linked Identity Networks` | Meta description, SEO |
 | `url` | `https://daplin.org` | Canonical site URL |
 | `baseurl` | `` (empty) | Root-hosted, no path prefix |
-| `plugins` | `[jekyll-remote-theme]` | Required for remote theme loading |
 
-Individual pages use front matter to control Primer Spec behavior (e.g., `title`, `subtitle`, `exclude_from_search`).
+Individual pages use front matter to control layout behavior (e.g., `title`, `layout`).
 
 ### 8.6 Deployment
 

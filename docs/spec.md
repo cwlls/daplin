@@ -1,8 +1,6 @@
 ---
-layout: spec
-title: Protocol Specification
-subtitle: Daplin v0.2.0 — DRAFT
-sitemapOrder: 2
+layout: default
+title: Protocol Specification — Daplin v0.2.0 DRAFT
 ---
 
 ## 1. Introduction

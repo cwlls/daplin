@@ -1,8 +1,6 @@
 ---
-layout: spec
-title: Project Rationale
-subtitle: Why Daplin is designed the way it is
-sitemapOrder: 3
+layout: default
+title: Project Rationale — Daplin
 ---
 
 ## The Problem

@@ -1,8 +1,6 @@
 ---
-layout: spec
+layout: default
 title: Daplin
-subtitle: Dignified Attestation Protocol for Linked Identity Networks
-sitemapOrder: 1
 ---
 
 Your identity, your relationships, and your communications are yours. Not because a company promises to protect them, but because the protocol makes it structurally impossible for anyone else to own them.
