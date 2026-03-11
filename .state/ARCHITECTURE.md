@@ -2,6 +2,7 @@
 
 > **Status:** Draft v0.2 · Phase 0 complete · Last updated: 2026-03-11
 > **Scope:** Instance server reference implementation (v0.1 vertical slice) + project documentation site
+> **Protocol Spec:** v0.4.0 (updated 2026-03-11 with multi-device sync support)
 
 ---
 
@@ -42,7 +43,7 @@ daplin/
 │   ├── _config.yml              # Jekyll config (primer-spec theme, site metadata)
 │   ├── CNAME                    # Custom domain: daplin.org
 │   ├── index.md                 # Landing page (home)
-│   ├── spec.md                  # Protocol specification (v0.2.0)
+│   ├── spec.md                  # Protocol specification (v0.4.0)
 │   ├── rationale.md             # Project rationale and design philosophy
 │   ├── naming.md                # On the name "Daplin" — origin and commitment
 │   ├── ai-collaboration.md      # AI-human collaboration in protocol design
@@ -164,6 +165,19 @@ The instance database stores **only indexing and reference data** — never iden
 | `known_instances` | Discovered federation peers + metadata |
 
 Identity documents (cards, attestations) live in content-addressable storage. Transient activity delivery is handled by NATS JetStream (see §4.4). The database holds pointers, not payloads or queues.
+
+### 4.2.1 Multi-Device Profile Sync (v0.4.0)
+
+As of protocol v0.4.0, the identity model supports multi-device synchronization via **Sync Keys** and **Sync Blobs**:
+
+- **Sync Key** — A device-specific key derived from the master seed, used to encrypt and decrypt profile data across devices
+- **Sync Blob** — A CIDv1-addressed content object containing encrypted profile state (display name, seal palette, public mediums, etc.), stored in content-addressable storage
+- **Write path** — When a user updates their profile on Device A, the instance encrypts the new state with the Sync Key, stores it as a Sync Blob, and publishes the blob's CID to the user's event queue
+- **Read path** — When Device B connects, it retrieves pending Sync Blob CIDs from the event queue, decrypts them with the Sync Key, and merges the profile state
+
+This architecture keeps the profile plaintext on the device (never transmitted to the instance) while enabling cross-device synchronization through encrypted, content-addressed storage. The instance remains a "thin postman" — it routes encrypted payloads it cannot read.
+
+**v0.1 scope:** Multi-device sync is deferred. The server stores a single plaintext profile per identity. Device-side encryption and sync blob management are client-side concerns for future versions.
 
 ### 4.3 Federation Model
 
@@ -374,12 +388,12 @@ The landing page is *not* a copy-paste of the spec introduction — it is a purp
 
 #### Protocol Specification (`spec.md`)
 
-The v0.2.0 protocol specification in full. This is the canonical rendering of `daplin-spec-v0.2.0.md` with two modifications:
+The v0.4.0 protocol specification in full. This is the canonical rendering of the specification with two modifications:
 
 1. The manually-authored `## Table of Contents` section is **removed** — Primer Spec's sidebar TOC replaces it
 2. Front matter is added for title, subtitle, and any theme-specific settings
 
-The spec content itself is unchanged. As the spec evolves, `spec.md` is the living document; the original `daplin-spec-v0.2.0.md` is retained as a point-in-time snapshot.
+The spec content is the living document. As the spec evolves, `spec.md` is updated; point-in-time snapshots (e.g., `daplin-spec-v0.2.0.md`) are retained in `docs/src/` for reference.
 
 #### Project Rationale (`rationale.md`)
 

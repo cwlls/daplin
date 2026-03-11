@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Protocol Specification
-excerpt: The Daplin v0.2.0 protocol specification — decentralized identity, trust, and key exchange.
+excerpt: The Daplin v0.4.0 protocol specification — decentralized identity, trust, and key exchange.
 nav_order: 2
 ---
 
@@ -58,7 +58,8 @@ This specification does not define end-to-end encrypted messaging protocols, spe
 | **Capability Key** | An intermediate symmetric key used to encrypt a tier of contact information for eligible recipients. |
 | **Relationship Depth** | A classification of how well two parties know each other personally, independent of network topology. |
 | **Degree** | Network distance between two parties in the trust graph. Direct connections are 1st degree. |
-| **Epoch** | A defined time period after which capability keys rotate. Each tier has its own epoch length. |
+| **Sync Key** | A symmetric key derived deterministically from the master key, used to encrypt the user's own profile plaintext for multi-device sync via IPFS. Identical across all of a user's authorised devices. |
+| **Sync Blob** | An encrypted IPFS document containing the user's profile plaintext, encrypted with the sync key. Used to sync profile data across multiple devices. |
 | **PoW** | Proof of Work. A computational puzzle required before certain protocol actions. |
 
 ---
@@ -91,8 +92,9 @@ Every user maintains a key hierarchy rooted in a master key:
 | **Encryption Subkey** | Encrypts messages and capability keys. Device-specific. Expires annually. |
 | **Authentication Subkey** | Proves identity to instances. Device-specific. Expires annually. |
 | **Recovery Subkey** | Used exclusively for key recovery declarations. Purpose-limited. Stored cold. Expires every 5 years. |
+| **Sync Key** | Encrypts the user's own profile plaintext for multi-device sync. Derived deterministically from the master key. Identical across all of the user's devices. |
 
-Subkeys are device-specific. Each device a user operates receives its own set of subkeys, signed by the master key. Compromising one device's subkeys does not compromise any other device or the master key.
+Subkeys are device-specific. Each device a user operates receives its own set of subkeys, signed by the master key. Compromising one device's subkeys does not compromise any other device or the master key. The sync key is the exception — it is derived from the master key and is therefore identical on every device the user authorises.
 
 ### 3.3 Identity Sharing — Deep Links and Seal Endpoints
 
@@ -250,9 +252,9 @@ Difficulty is adaptive: the puzzle is tuned so that the time cost remains approx
 
 ### 6.1 Model
 
-Contact information in Daplin is never stored by anyone other than its owner. Each person publishes their own contact information on their instance. A received card functions as a permission token: possession of a valid signed card proves the right to fetch the card owner's profile.
+Contact information in Daplin is owned and controlled entirely by the user. The plaintext lives only on the user's device. When Alice updates her profile, her app encrypts each tier using the appropriate capability key and publishes the resulting opaque blobs to IPFS. The instance holds only the CID pointer — it never sees plaintext. A received card functions as a permission token: possession of a valid signed card proves the right to fetch and decrypt the card owner's profile data from IPFS.
 
-Capability keys are intermediate symmetric keys that encrypt tiers of contact information. They allow Alice to encrypt her data once per tier rather than once per recipient. When Alice changes her phone number, she re-encrypts with the same `close_key` and all eligible recipients automatically have access to the update.
+Capability keys are intermediate symmetric keys that encrypt tiers of contact information. They allow Alice to encrypt her data once per tier rather than once per recipient. When Alice changes her phone number, she re-encrypts with the same `close_key` and publishes a new blob to IPFS — all eligible recipients automatically have access to the update.
 
 ### 6.2 Capability Key Tiers
 
@@ -367,13 +369,15 @@ All permanent signed documents in Daplin are stored on IPFS and addressed by the
 | Stored on IPFS | Never stored on IPFS |
 |----------------|----------------------|
 | Cards and card history | Pairwise DIDs (`did:peer`) — device only |
-| Attestations | Profile field values — encrypted blobs on IPFS, keys device only |
-| Key rotation records | Capability keys — device only |
-| Migration declarations | Private messages — device only |
-| Recovery declarations | Event queue contents — transient, instance only |
+| Profile field values (encrypted contact blobs) | Profile field plaintext — device only |
+| Profile sync blob (encrypted with sync key) | Sync key — device only |
+| Attestations | Capability keys — device only |
+| Key rotation records | Private messages — device only |
+| Migration declarations | Event queue contents — transient, instance only |
+| Recovery declarations | |
 | Accepted introduction activities | |
 
-Profile field values are encrypted via capability keys and stored on IPFS as opaque blobs. The blobs are publicly retrievable but unreadable without the appropriate capability key. Pairwise DIDs must never be published to IPFS under any circumstances — even encrypted, their presence would constitute an observable graph edge.
+Profile field values are encrypted via capability keys on the user's device before being published to IPFS as opaque blobs. The blobs are publicly retrievable but unreadable without the appropriate capability key. The plaintext never leaves the user's device. Pairwise DIDs must never be published to IPFS under any circumstances — even encrypted, their presence would constitute an observable graph edge.
 
 ### 9.2 IPFS as a Separate Concern
 
@@ -389,17 +393,42 @@ The Daplin instance software communicates with IPFS via a defined storage interf
 
 ### 9.3 Device Storage
 
-The device is the most trusted storage layer in Daplin. All cryptographic material lives here and never leaves except as encrypted payloads to intended recipients.
+The device is the most trusted storage layer in Daplin. All cryptographic material lives here. Profile plaintext is also maintained locally as a working copy, kept in sync with IPFS via the multi-device sync mechanism described in §9.4.
 
 | Storage Location | Contents |
 |-----------------|----------|
-| **Secure Enclave** | Master key, device subkeys, pairwise keys (one per relationship) |
-| **App Local Storage** (encrypted) | Card CIDs (contact list), received capability keys, offline activity queue |
-| **Never stored locally** | Other users' contact information — always fetched fresh on demand |
+| **Secure Enclave** | Master key, sync key, device subkeys, pairwise keys (one per relationship) |
+| **App Local Storage** (encrypted) | User's own profile plaintext (working copy), card CIDs (contact list), received capability keys, offline activity queue |
+| **Never stored locally** | Other users' contact information — always fetched fresh from IPFS on demand |
 
-Applications do not store copies of other users' contact information. Profile data is always fetched fresh from the subject's instance using the card as a permission token, with the capability key used to decrypt the response.
+Other users' contact information is never cached; it is always fetched fresh from IPFS using the card as a permission token and the capability key to decrypt.
 
-### 9.4 Pairwise Channel Transport
+### 9.4 Multi-Device Profile Sync
+
+Alice may use Daplin on multiple devices. Her profile plaintext must be available and editable on all of them. Daplin uses IPFS as the sync layer, encrypted with a sync key derived deterministically from the master key.
+
+**Write path (Alice saves a profile change):**
+
+1. App encrypts the updated plaintext with the sync key
+2. Publishes the encrypted sync blob to IPFS, obtaining a new CID
+3. Updates the sync blob CID pointer on Alice's instance
+4. Re-encrypts the affected capability key tiers and publishes updated contact blobs to IPFS
+5. Updates the contact blob CID pointers on the instance
+
+Steps 2–5 happen in the background. The UI confirms the save immediately.
+
+**Read path (Alice opens the profile editor on a new device):**
+
+1. App fetches the current sync blob CID from Alice's instance
+2. Fetches the encrypted sync blob from IPFS
+3. Decrypts with the sync key (derived from master key, available on any authorised device)
+4. Presents the editable profile
+
+The instance holds only CID pointers — it never receives the sync key or the plaintext. The round-trip to IPFS on first load is the only latency cost, and it occurs only when editing, which is infrequent.
+
+> **Note:** The sync blob CID is distinct from the contact blob CIDs. The sync blob contains plaintext encrypted for Alice's own use. The contact blobs contain data encrypted with capability keys for eligible contacts. They are separate documents on IPFS.
+
+### 9.5 Pairwise Channel Transport
 
 Pairwise DIDs and their associated keys are exchanged directly between devices using local transport. The instance is never involved. The transport layer is used only for delivery — once keys are on both devices, the transport is irrelevant and no persistent connection is maintained.
 
@@ -411,7 +440,7 @@ Pairwise DIDs and their associated keys are exchanged directly between devices u
 
 From the user's perspective, the entire exchange is a single tap. The app silently generates the pairwise keypair, completes the exchange via WiFi Direct, verifies the counterpart's global DID signature, stores the pairwise keys in the secure enclave, issues capability keys, and queues any attestation for later publication.
 
-### 9.5 Pairwise Channel Re-establishment
+### 9.6 Pairwise Channel Re-establishment
 
 If a device is lost, pairwise keys for all relationships on that device are gone. Re-establishment does not require a new introduction — the existing global DID attestation and relationship depth are preserved. The app initiates a re-establishment flow:
 
@@ -420,11 +449,12 @@ If a device is lost, pairwise keys for all relationships on that device are gone
 
 > **Note:** Re-establishment is not visible to the user beyond a brief confirmation. It does not affect relationship depth, attestations, or capability key access.
 
-### 9.6 Instances
+### 9.7 Instances
 
 Instances are thin infrastructure layers. They do not store contact information, social graphs, pairwise DIDs, or message content. Their responsibilities are:
 
 - Resolving a DID to its current card CID and instance endpoint
+- Storing CID pointers for each user's current contact blobs and sync blob
 - Event queue management: temporary delivery of protocol activities
 - IPFS pinning: coordinating with the configured IPFS backend to ensure their users' documents remain available
 - Capability key issuance: mediating access control for remote connections
@@ -591,11 +621,11 @@ Privacy is not a mode or a setting in Daplin — it is the only state. There is 
 
 ### 15.2 Data Minimization
 
-The protocol is designed around data minimization. Instances store pointers and transient events, not data. Contact information lives only with its owner. Social graphs exist only in encrypted form on clients. The only information an instance operator can observe is that their user sent or received an activity, not what it contained.
+The protocol is designed around data minimization. Instances store only CID pointers and transient events — never plaintext contact data. Contact information plaintext lives only on the user's device. Encrypted blobs on IPFS are publicly retrievable but structurally unreadable without the appropriate capability key. Social graphs exist only in encrypted form on clients. The only information an instance operator can observe is that their user sent or received an activity, not what it contained.
 
 ### 15.3 Right to Erasure
 
-Because each user owns and publishes their own data, erasure is straightforward: a user who deletes their profile from their instance removes the only authoritative source of their contact information. Cards and attestations on IPFS are immutable, but they contain only public-key-anchored identity information, not contact details.
+Because each user's contact information plaintext lives only on their device, erasure of that data is entirely within their control. Deleting the app removes the only copy of the plaintext. The encrypted blobs on IPFS become permanently unreadable — the keys to decrypt them are gone with the device. Cards and attestations on IPFS are immutable, but they contain only public-key-anchored identity information, not contact details.
 
 ### 15.4 High-Risk Users
 
@@ -626,7 +656,9 @@ The following items were identified during the design process as warranting futu
 |---------|-------|
 | 0.1.0 | Initial draft. Core identity, trust, capability key, federation, and activity models defined. |
 | 0.2.0 | New introduction. Handles removed; replaced with deep link format and seal endpoint. Two-layer DID model (global + pairwise). CID terminology corrected throughout. IPFS separated as external concern with Docker Compose reference deployment. Pairwise channel transport and re-establishment documented. Capability key epoch rotation model added. Blockchain references removed. |
+| 0.3.0 | Storage model clarified. Contact information plaintext is device-primary: lives only on the user's device, encrypted on-device before publishing to IPFS. Instance never receives plaintext. IPFS table corrected to remove internal contradiction. Device storage table updated to include user's own profile plaintext. Privacy and erasure sections updated to reflect correct model. |
+| 0.4.0 | Multi-device profile sync added. Sync key derived from master key added to key hierarchy. Sync blob (profile plaintext encrypted with sync key, stored on IPFS) defined. Write and read paths documented. IPFS table, device storage table, instance responsibilities, and terminology updated accordingly. |
 
 ---
 
-*End of Daplin Protocol Specification v0.2.0*
+*End of Daplin Protocol Specification v0.4.0*

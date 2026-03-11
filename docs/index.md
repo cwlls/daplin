@@ -36,7 +36,7 @@ Daplin is infrastructure, not an application. It does not replace Signal, email,
 
 ## Project Status
 
-Daplin is in the **design and specification phase**. The v0.2.0 protocol specification is complete as a draft. No implementation code exists yet.
+Daplin is in the **design and specification phase**. The v0.4.0 protocol specification is complete as a draft. The reference server implementation is in active development.
 
 The next milestone is a reference server implementation in Python/FastAPI — a federated instance server that proves the protocol works end-to-end with two instances exchanging identity cards.
 
@@ -46,7 +46,7 @@ The specification is open for review and feedback. If you find ambiguities, miss
 
 ## Explore
 
-- [**Protocol Specification**](spec.md) — The full Daplin v0.2.0 protocol specification
+- [**Protocol Specification**](spec.md) — The full Daplin v0.4.0 protocol specification
 - [**Project Rationale**](rationale.md) — Why Daplin is designed the way it is
 - [**On the Name**](naming.md) — The origin and meaning of "Daplin"
 - [**AI-Human Collaboration**](ai-collaboration.md) — How this project was built

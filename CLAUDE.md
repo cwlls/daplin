@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Daplin (Dignified Attestation Protocol for Linked Identity Networks) is an open protocol for decentralized digital identity, cryptographic public key exchange, and social trust. Licensed under Apache 2.0.
 
-**Current status:** Phase 1 in progress. The protocol spec (v0.2.0 draft) and architectural overview are complete. Phase 0 (documentation site at daplin.org) is complete. Server scaffolding (Task 1) is complete.
+**Current status:** Phase 1 in progress. The protocol spec (v0.4.0) and architectural overview are complete. Phase 0 (documentation site at daplin.org) is complete. Server scaffolding (Task 1) is complete.
 
 ## Repository Structure
 

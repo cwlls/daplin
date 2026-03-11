@@ -2,9 +2,9 @@
 
 **Dignified Attestation Protocol for Linked Identity Networks**
 
-> **Project Status: Design & Specification Phase**
+> **Project Status: Design & Specification Phase — Server Implementation In Progress**
 >
-> Daplin is in active design. The protocol specification (v0.2.0 draft) is complete. The documentation site is live at [daplin.org](https://daplin.org). No server implementation code exists yet. Everything described below reflects the intended design, not current functionality.
+> Daplin is in active development. The protocol specification (v0.4.0 draft) is complete. The documentation site is live at [daplin.org](https://daplin.org). The reference server implementation is in progress. Everything described below reflects the intended design; the server is pre-alpha.
 
 ---
 
@@ -43,20 +43,20 @@ Think of it as a digital business card system where:
 
 | Component | Status |
 |-----------|--------|
-| Protocol specification (v0.2.0) | Draft complete |
+| Protocol specification (v0.4.0) | Draft complete |
 | Architectural design | Complete |
 | Documentation site (daplin.org) | Complete |
-| Reference server implementation | Not started |
+| Reference server implementation | In progress (Phase 1) |
 | Client libraries | Not started |
 | Federation testing | Not started |
 
-The immediate goal is a **reference implementation of the instance server** in Python — a vertical slice that proves two instances can federate and exchange cards. This is pre-alpha software that does not exist yet.
+The immediate goal is a **reference implementation of the instance server** in Python — a vertical slice that proves two instances can federate and exchange cards. This is pre-alpha software under active development.
 
 ## Documentation
 
 The full project documentation is published at **[daplin.org](https://daplin.org)**, a static site built with Jekyll and hosted on GitHub Pages. The site includes:
 
-- **Protocol Specification** — The complete v0.2.0 protocol specification
+- **Protocol Specification** — The complete v0.4.0 protocol specification
 - **Project Rationale** — Design philosophy and the problem space Daplin addresses
 - **Naming Statement** — The origin and significance of the name "Daplin"
 - **AI-Human Collaboration** — A reflection on how AI augmented the design process
