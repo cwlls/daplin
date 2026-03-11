@@ -4,7 +4,7 @@
 
 > **Project Status: Design & Specification Phase**
 >
-> Daplin is in active design. The protocol specification (v0.1.0 draft) is complete. No working software exists yet. Everything described below reflects the intended design, not current functionality.
+> Daplin is in active design. The protocol specification (v0.2.0 draft) is complete. The documentation site is live at [daplin.org](https://daplin.org). No server implementation code exists yet. Everything described below reflects the intended design, not current functionality.
 
 ---
 
@@ -23,7 +23,7 @@ Think of it as a digital business card system where:
 
 1. **Create an identity.** You generate a set of cryptographic keys on your device. These keys *are* your identity — no registration with a central authority required.
 
-2. **Pick a handle.** You register a human-readable handle (like `alice>example.daplin.io`) on an instance — a server that routes messages on your behalf. The instance is a postman: it delivers sealed envelopes but cannot read them.
+2. **Share your identity.** You share your identity via a deep link (like `daplin://did:key:...@instance.example.com`) or QR code. The link encodes your DID and the instance that routes messages on your behalf. The instance is a postman: it delivers sealed envelopes but cannot read them.
 
 3. **Exchange cards.** When you meet someone (in person or remotely), you exchange cards. Each card is a signed document containing your public identity and encrypted layers of contact information.
 
@@ -35,7 +35,7 @@ Think of it as a digital business card system where:
 
 - **Privacy is the only mode.** No public profiles, no searchable directories, no opt-in privacy toggles.
 - **Identity is portable.** Switch servers without losing anything. Your identity, contacts, and trust relationships travel with you.
-- **Servers are thin.** Instances route encrypted messages and resolve handles. They cannot read your data, see your contacts, or map your relationships.
+- **Servers are thin.** Instances route encrypted activities and resolve DIDs. They cannot read your data, see your contacts, or map your relationships.
 - **No blockchain.** Identity is anchored to cryptographic keys and content-addressed storage (IPFS), not a blockchain. No tokens, no gas fees, no environmental cost.
 - **Open protocol, not a product.** Daplin is infrastructure. Anyone can implement it, run an instance, or build applications on top of it.
 
@@ -43,17 +43,24 @@ Think of it as a digital business card system where:
 
 | Component | Status |
 |-----------|--------|
-| Protocol specification (v0.1.0) | Draft complete |
+| Protocol specification (v0.2.0) | Draft complete |
 | Architectural design | Complete |
+| Documentation site (daplin.org) | Complete |
 | Reference server implementation | Not started |
 | Client libraries | Not started |
 | Federation testing | Not started |
 
 The immediate goal is a **reference implementation of the instance server** in Python — a vertical slice that proves two instances can federate and exchange cards. This is pre-alpha software that does not exist yet.
 
-## Contributing
+## Documentation
 
-Daplin is in its earliest stages. The specification and architecture are open for discussion. If you're interested in decentralized identity, cryptographic protocols, or federation, contributions and feedback are welcome.
+The full project documentation is published at **[daplin.org](https://daplin.org)**, a static site built with Jekyll and hosted on GitHub Pages. The site includes:
+
+- **Protocol Specification** — The complete v0.2.0 protocol specification
+- **Project Rationale** — Design philosophy and the problem space Daplin addresses
+- **Naming Statement** — The origin and significance of the name "Daplin"
+- **AI-Human Collaboration** — A reflection on how AI augmented the design process
+- **Contributing Guide** — How to contribute to the project
 
 ## License
 
